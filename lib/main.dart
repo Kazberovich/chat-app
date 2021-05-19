@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firestore_app/screens/auth_screen.dart';
 import 'package:flutter_firestore_app/screens/chat_screen.dart';
 
 void main() {
@@ -15,9 +16,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: ChatScreen(),
+          primarySwatch: Colors.teal,
+          backgroundColor: Colors.teal,
+          accentColor: Colors.tealAccent,
+          accentColorBrightness: Brightness.dark,
+          buttonTheme: ButtonTheme.of(context).copyWith(
+            buttonColor: Colors.teal,
+            textTheme: ButtonTextTheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          )),
+      home: AuthScreen(),
     );
   }
 }
