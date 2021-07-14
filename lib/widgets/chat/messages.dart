@@ -25,50 +25,18 @@ class MessagesWidget extends StatelessWidget {
             reverse: true,
             itemBuilder: (ctx, index) {
               //return Text(chatDocs[index].toString());
+              print(chatDocs[index].toString());
               return MessageBubbleWidget(
                 chatDocs[index]['text'],
                 chatDocs[index]['userId'] ==
                         FirebaseAuth.instance.currentUser.uid
                     ? true
                     : false,
+                key: ValueKey(chatDocs[index].id),
+                username: chatDocs[index]['username'],
               );
             });
       },
     );
   }
 }
-
-// StreamBuilder(
-//   stream: FirebaseFirestore.instance
-//       .collection('chats/2gyCJVFGEA032VrzjdZP/messages')
-//       .snapshots(),
-//   builder: (ctx, streamSnapshot) {
-//     if (streamSnapshot.connectionState == ConnectionState.waiting) {
-//       return Center(
-//         child: Column(
-//           children: [
-//             CircularProgressIndicator(),
-//             Text('Loggin out...'),
-//           ],
-//         ),
-//       );
-//     }
-
-//     if (streamSnapshot.data == null) {
-//       FirebaseAuth.instance.signOut();
-
-//       return Center(
-//         child: CircularProgressIndicator(),
-//       );
-//     }
-
-//     final documents = streamSnapshot.data.docs;
-//     return ListView.builder(
-//       itemCount: documents.length,
-//       itemBuilder: (ctx, index) => Container(
-//         child: Text(documents[index]['text']),
-//         padding: EdgeInsets.all(16),
-//       ),
-//     );
-//   },
-// )
