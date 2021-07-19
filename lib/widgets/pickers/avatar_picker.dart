@@ -17,7 +17,11 @@ class _AvatarPickerState extends State<AvatarPicker> {
   File _pickedFile;
 
   void _pickImage() async {
-    final pickedImage = await _picker.getImage(source: ImageSource.gallery);
+    final pickedImage = await _picker.getImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxWidth: 150,
+    );
     setState(() {
       _pickedFile = File(pickedImage.path);
     });
