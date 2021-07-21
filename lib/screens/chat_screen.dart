@@ -25,6 +25,8 @@ class _ChatScreenState extends State<ChatScreen> {
       sound: true,
     );
 
+    final token = FirebaseMessaging.instance.getToken();
+
     FirebaseMessaging.onBackgroundMessage((message) {
       print('Got a message in background!');
       print('Message data: ${message.data}');
@@ -44,6 +46,8 @@ class _ChatScreenState extends State<ChatScreen> {
       print(event.data);
       print(event.toString());
     });
+
+    FirebaseMessaging.instance.subscribeToTopic('chats');
 
     Firebase.initializeApp().whenComplete(() {
       print("completed");
