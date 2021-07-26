@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_firestore_app/screens/auth_screen.dart';
 import 'package:flutter_firestore_app/screens/chat_screen.dart';
+import 'package:flutter_firestore_app/screens/splash_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,9 +18,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  Future<void> _getBatteryLevel() async {
+    const platform = MethodChannel("course.flutter.dev/battery");
+    try {
+      final batteryLevel = await platform.invokeMethod("getBatteryLevel");
+      print("BATTERY: " + batteryLevel);
+    } on PlatformException catch (e) {
+      print("BATTERY: " + e.message);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
+    _getBatteryLevel();
+
     Firebase.initializeApp().whenComplete(() {
       print("initialization completed");
       setState(() {});
@@ -44,6 +59,10 @@ class _MyAppState extends State<MyApp> {
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, userSnapshot) {
+            if (userSnapshot.connectionState == ConnectionState.waiting) {
+              return SplashScreen();
+            }
+
             if (userSnapshot.hasData) {
               return ChatScreen();
             } else {

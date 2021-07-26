@@ -60,6 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Chat'), actions: [
         DropdownButton(
+          underline: Container(),
           icon: Icon(Icons.more_vert),
           items: [
             DropdownMenuItem(
