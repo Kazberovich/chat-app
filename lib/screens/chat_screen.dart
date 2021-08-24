@@ -1,6 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firestore_app/widgets/chat/messages.dart';
+import 'package:flutter_firestore_app/widgets/chat/new_message.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -11,6 +14,41 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+
+    final fm = FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    final token = FirebaseMessaging.instance.getToken();
+
+    FirebaseMessaging.onBackgroundMessage((message) {
+      print('Got a message in background!');
+      print('Message data: ${message.data}');
+      return;
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      print(event.data);
+      print(event.toString());
+    });
+
+    FirebaseMessaging.instance.subscribeToTopic('chats');
+
     Firebase.initializeApp().whenComplete(() {
       print("completed");
       setState(() {});
@@ -20,34 +58,43 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('chats/2gyCJVFGEA032VrzjdZP/messages')
-            .snapshots(),
-        builder: (ctx, streamSnapshot) {
-          if (streamSnapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          final documents = streamSnapshot.data.docs;
-          return ListView.builder(
-            itemCount: documents.length,
-            itemBuilder: (ctx, index) => Container(
-              child: Text(documents[index]['text']),
-              padding: EdgeInsets.all(16),
+      appBar: AppBar(title: Text('Chat'), actions: [
+        DropdownButton(
+          underline: Container(),
+          icon: Icon(Icons.more_vert),
+          items: [
+            DropdownMenuItem(
+              child: Container(
+                child: Row(
+                  children: [
+                    Icon(Icons.exit_to_app),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text('Logout'),
+                  ],
+                ),
+              ),
+              value: 'logout',
             ),
-          );
-        },
+          ],
+          onChanged: (itemIdentifier) {
+            if (itemIdentifier == 'logout') {
+              FirebaseAuth.instance.signOut();
+            }
+          },
+        )
+      ]),
+      body: SafeArea(
+        child: Container(
+          child: Column(children: [
+            Expanded(
+              child: MessagesWidget(),
+            ),
+            NewMessageWidget(),
+          ]),
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            FirebaseFirestore.instance
-                .collection('chats/2gyCJVFGEA032VrzjdZP/messages')
-                .add({'text': 'This was added by clicking the button'});
-          }),
     );
   }
 }

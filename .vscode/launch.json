@@ -1,0 +1,37 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "flutter_firestore_app",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "iPhone (Sergei)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "00008020-000148922652002E"
+        },
+        {
+            "name": "Android with Play Services",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5554"
+        },
+        {
+            "name": "iPhone 12 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "5595ED02-1961-4779-9F81-2200B02882D5"
+        },
+    ],
+    "compounds": [
+        {
+          "name": "All Devices",
+          "configurations": ["iPhone (Sergei)", "Android with Play Services", "iPhone 12 Pro Max"]
+        }
+      ]
+}
